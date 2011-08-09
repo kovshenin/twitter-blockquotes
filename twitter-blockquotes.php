@@ -118,6 +118,14 @@ class Twitter_Blockquotes_Plugin {
 		// General section
 		add_settings_field( 'custom-css', 'Custom CSS', array( &$this, '_settings_custom_css' ), 'twitter-blockquotes', 'twitter_blockquotes_general' );
 		add_settings_field( 'clear-cache', 'Clear Cache', array( &$this, '_settings_clear_cache'), 'twitter-blockquotes', 'twitter_blockquotes_general' );
+		
+		// Clearing caches?
+		if ( isset( $_GET['twitter_blockquote_clear_caches'], $_GET['_wpnonce'] ) && current_user_can( 'manage_options' ) && check_admin_referer( 'twitter-blockquotes-clear-caches' ) ) {
+			
+			// Call that dangerous function and add an updated message.
+			$this->_clear_post_meta_caches();
+			add_settings_error( 'twitter-blockquotes', 100, 'Caches have been cleared!', 'updated' );
+		}
 	}
 	
 	public function _settings_section_general() {}
@@ -136,8 +144,10 @@ class Twitter_Blockquotes_Plugin {
 	 * Settings Field: Clear Cache
 	 */
 	public function _settings_clear_cache() {
+		$nonce = wp_create_nonce( 'twitter-blockquotes-clear-caches' );
+		$url = admin_url( 'options-general.php?page=twitter-blockquotes&twitter_blockquote_clear_caches=1&_wpnonce=' . $nonce );
 	?>
-		<a href="#" class="button">Clear All Caches</a>
+		<a href="<?php echo $url; ?>" class="button">Clear All Caches</a>
 		<span class="description">Hit this button if you'd like to clear all the caches.</span>
 	<?php
 	}
@@ -177,6 +187,19 @@ class Twitter_Blockquotes_Plugin {
 		</form>
 	</div>
 	<?php
+	}
+	
+	/*
+	 * Clear Caches (internal)
+	 *
+	 * Quite a dangerous approach at clearing all the Twitter Blockquotes caches,
+	 * queries the database directly with a non-limited DELETE.
+	 */
+	private function _clear_post_meta_caches() {
+		global $wpdb;
+		
+		// This is dangerous, seriously..
+		return $wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_tbq_%'" );
 	}
 	
 	/*
