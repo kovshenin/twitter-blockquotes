@@ -15,7 +15,7 @@
 class Twitter_Blockquotes_Plugin {
 	
 	/*
-	 * Class Constructore (fired during WordPress init)
+	 * Class Constructor (fired during WordPress init)
 	 */
 	function __construct() {
 		// Register an embed handler
@@ -31,8 +31,6 @@ class Twitter_Blockquotes_Plugin {
 	}
 	
 	/*
-	 * Load Options
-	 *
 	 * Populates the $this->options array from the database.
 	 */
  	private function _load_options() {
@@ -103,8 +101,6 @@ class Twitter_Blockquotes_Plugin {
 	}
 	
 	/*
-	 * Hooked and fired during wp_head
-	 *
 	 * Outputs the custom CSS provided via the plugin options.
 	 */
 	public function _wp_head() {
@@ -113,8 +109,6 @@ class Twitter_Blockquotes_Plugin {
 	}
 	
 	/*
-	 * Admin Init
-	 *
 	 * Fired during admin_init (doh!), registers settings, sections and fields.
 	 */
 	public function _admin_init() {
@@ -130,8 +124,6 @@ class Twitter_Blockquotes_Plugin {
 	
 	/*
 	 * Settings Field: Custom CSS
-	 *
-	 * Used in $this->_wp_head to output any custom CSS if available.
 	 */
 	public function _settings_custom_css() {
 	?>
@@ -142,8 +134,6 @@ class Twitter_Blockquotes_Plugin {
 	
 	/*
 	 * Settings Field: Clear Cache
-	 *
-	 * Outputs a button that is supposed to clear the caches (empty post metas)
 	 */
 	public function _settings_clear_cache() {
 	?>
@@ -153,8 +143,6 @@ class Twitter_Blockquotes_Plugin {
 	}
 	
 	/*
-	 * Validate Options
-	 *
 	 * Validates the twitter-blockquotes options when saved.
 	 */
 	public function _validate_options( $options ) {
@@ -162,8 +150,6 @@ class Twitter_Blockquotes_Plugin {
 	}
 	
 	/*
-	 * Admin Menu
-	 *
 	 * Adds a new options page called Twitter Blockquotes under Settings.
 	 */
 	public function _admin_menu() {
@@ -171,8 +157,6 @@ class Twitter_Blockquotes_Plugin {
 	}
 	
 	/*
-	 * Admin Menu Content
-	 *
 	 * Renders the contents of the Twitter Blockquotes options page. Uses the Settings API.
 	 */
 	public function _admin_menu_content() {
