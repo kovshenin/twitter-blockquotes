@@ -1,12 +1,15 @@
 <?php
 /*
  * Plugin Name: Twitter Blockquotes
- * Plugin URI: http://wordpress.org/extend/plugins/plus-one/
- * Description: Use this plugin to easily add the Google +1 button to your WordPress site
- * Version: 1.0.1
+ * Plugin URI: http://theme.fm/plugins/twitter-blockquotes/
+ * Description: Embed tweets in your website or blog.
+ * Version: 1.0
  * Author: kovshenin
- * Author URI: http://theme.fm
+ * Author URI: http://kovshenin.com
  * License: GPL2
+ *
+ * Inspired by the Blackbird Pie plugin by bradvin: http://wordpress.org/extend/plugins/twitter-blackbird-pie/
+ * Kudos for the plugin sources, I actually took some of the regexes from it.
  */
 
 class Twitter_Blockquotes_Plugin {
@@ -15,19 +18,23 @@ class Twitter_Blockquotes_Plugin {
 	 * Class Constructore (fired during WordPress init)
 	 */
 	function __construct() {
+		// Register an embed handler
 		wp_embed_register_handler( 'twitter_blockquote', '/^(http|https):\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(es)?\/(\d+)$/', array( &$this, 'embed_handler' ) );
+		
+		// A few hooks
 		add_action( 'admin_init', array( &$this, '_admin_init' ) );
 		add_action( 'admin_menu', array( &$this, '_admin_menu' ) );
 		add_action( 'wp_head', array( &$this, '_wp_head' ) );
 		
+		// Populate $this->options array
 		$this->_load_options();
 	}
 	
-	public function _wp_head() {
-		if ( isset( $this->options['custom-css'] ) && ! empty( $this->options['custom-css'] ) )
-			echo "<style>{$this->options['custom-css']}</style>";
-	}
-	
+	/*
+	 * Load Options
+	 *
+	 * Populates the $this->options array from the database.
+	 */
  	private function _load_options() {
 		$this->options = (array) get_option( 'twitter-blockquotes' );
 	}
@@ -57,6 +64,9 @@ class Twitter_Blockquotes_Plugin {
 					'screen_name' => $raw_tweet->user->screen_name,
 					'url' => $url
 				);
+				
+				// Allows developers to modify the array above before it is cached.
+				$tweet = apply_filters( 'twitter_blockquote_tweet_raw', $tweet, $raw_tweet, $tweet_id, $url );
 				
 				// Cache this for later use.
 				update_post_meta( $post_id, $meta_key, $tweet );
@@ -92,25 +102,49 @@ class Twitter_Blockquotes_Plugin {
 		return apply_filters( 'embed_twitter_blockquote', $embed, $matches, $attr, $url, $rawattr );
 	}
 	
+	/*
+	 * Hooked and fired during wp_head
+	 *
+	 * Outputs the custom CSS provided via the plugin options.
+	 */
+	public function _wp_head() {
+		if ( isset( $this->options['custom-css'] ) && ! empty( $this->options['custom-css'] ) )
+			echo "<style>{$this->options['custom-css']}</style>";
+	}
+	
+	/*
+	 * Admin Init
+	 *
+	 * Fired during admin_init (doh!), registers settings, sections and fields.
+	 */
 	public function _admin_init() {
 		register_setting( 'twitter-blockquotes', 'twitter-blockquotes', array( &$this, '_validate_options' ) );
 		add_settings_section( 'twitter_blockquotes_general', 'General Settings', array( &$this, '_settings_section_general' ), 'twitter-blockquotes' );
 		
+		// General section
 		add_settings_field( 'custom-css', 'Custom CSS', array( &$this, '_settings_custom_css' ), 'twitter-blockquotes', 'twitter_blockquotes_general' );
 		add_settings_field( 'clear-cache', 'Clear Cache', array( &$this, '_settings_clear_cache'), 'twitter-blockquotes', 'twitter_blockquotes_general' );
 	}
 	
-	public function _settings_section_general() {
-
-	}
+	public function _settings_section_general() {}
 	
+	/*
+	 * Settings Field: Custom CSS
+	 *
+	 * Used in $this->_wp_head to output any custom CSS if available.
+	 */
 	public function _settings_custom_css() {
 	?>
-		<textarea class="code large-text" rows="5" name="twitter-blockquotes[custom-css]"><?php echo esc_textarea( $this->options['custom-css'] ); ?></textarea><br />
+		<textarea class="code large-text" rows="5" name="twitter-blockquotes[custom-css]"><?php echo esc_textarea( @$this->options['custom-css'] ); ?></textarea><br />
 		<span class="description">Use any CSS you like to customize your Twitter Blockquotes. The blockquote element selector is <code>blockquote.tweet</code></span>
 	<?php
 	}
 	
+	/*
+	 * Settings Field: Clear Cache
+	 *
+	 * Outputs a button that is supposed to clear the caches (empty post metas)
+	 */
 	public function _settings_clear_cache() {
 	?>
 		<a href="#" class="button">Clear All Caches</a>
@@ -118,14 +152,29 @@ class Twitter_Blockquotes_Plugin {
 	<?php
 	}
 	
+	/*
+	 * Validate Options
+	 *
+	 * Validates the twitter-blockquotes options when saved.
+	 */
 	public function _validate_options( $options ) {
 		return $options;
 	}
 	
+	/*
+	 * Admin Menu
+	 *
+	 * Adds a new options page called Twitter Blockquotes under Settings.
+	 */
 	public function _admin_menu() {
 		add_options_page( 'Twitter Blockquotes Options', 'Twitter Blockquotes', 'manage_options', 'twitter-blockquotes', array( &$this, '_admin_menu_content' ) );
 	}
 	
+	/*
+	 * Admin Menu Content
+	 *
+	 * Renders the contents of the Twitter Blockquotes options page. Uses the Settings API.
+	 */
 	public function _admin_menu_content() {
 	?>
 	<div class="wrap">
@@ -133,6 +182,7 @@ class Twitter_Blockquotes_Plugin {
 		<h2>Twitter Blockquotes Settings</h2>
 
 		<form method="post" action="options.php">
+				<!-- Provide some help, eh? -->
 				<p><strong>Hi there friend!</strong> Thank you for using Twitter Blockquotes. We don't provide too many options yet, Twitter Blockquotes is designed to be as clean and simple as possible. It's up to you how you want your tweets to appear, whether you want avatars and retweet capabilities, perhaps a Twitter bird on the left? Most of the styling is done through the Custom CSS field below, rest is up to a few actions and filters. Read <a href="theme.fm/2011/08/embedding-tweets-in-wordpress-with-twitter-blockquotes-1548/">this guide</a> to learn more.</p>
 				<p>Twitter Blockquotes usage is quite simple, just copy and paste a URL to any tweet in your posts or pages on a separate line, similar to how you embed YouTube or Vimeo videos. We'll transform that into a nice-looking blockquote for you!</p>
 
