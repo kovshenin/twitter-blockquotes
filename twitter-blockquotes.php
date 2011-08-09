@@ -177,7 +177,7 @@ class Twitter_Blockquotes_Plugin {
 
 		<form method="post" action="options.php">
 				<!-- Provide some help, eh? -->
-				<p><strong>Hi there friend!</strong> Thank you for using Twitter Blockquotes. We don't provide too many options yet, Twitter Blockquotes is designed to be as clean and simple as possible. It's up to you how you want your tweets to appear, whether you want avatars and retweet capabilities, perhaps a Twitter bird on the left? Most of the styling is done through the Custom CSS field below, rest is up to a few actions and filters. Read <a href="theme.fm/2011/08/embedding-tweets-in-wordpress-with-twitter-blockquotes-1548/">this guide</a> to learn more.</p>
+				<p><strong>Hi there friend!</strong> Thank you for using Twitter Blockquotes. We don't provide too many options yet, Twitter Blockquotes is designed to be as clean and simple as possible. It's up to you how you want your tweets to appear, whether you want avatars and retweet capabilities, perhaps a Twitter bird on the left? Most of the styling is done through the Custom CSS field below, rest is up to a few actions and filters. Read <a href="http://theme.fm/2011/08/embedding-tweets-in-wordpress-with-twitter-blockquotes-1548/">this guide</a> to learn more.</p>
 				<p>Twitter Blockquotes usage is quite simple, just copy and paste a URL to any tweet in your posts or pages on a separate line, similar to how you embed YouTube or Vimeo videos. We'll transform that into a nice-looking blockquote for you!</p>
 
 			<?php wp_nonce_field( 'update-options' ); ?>
