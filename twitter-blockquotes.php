@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Twitter Blockquotes
  * Plugin URI: http://theme.fm/plugins/twitter-blockquotes/
- * Description: Embed tweets in your website or blog.
+ * Description: Embed tweets in your website or blog, just like YouTube and Vimeo embeds -- copy and paste a URL to a tweet on a separate line in your editor.
  * Version: 1.0
  * Author: kovshenin
  * Author URI: http://kovshenin.com
