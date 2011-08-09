@@ -21,6 +21,10 @@ The plugin itself has got a custom CSS field where you can style your twitter bl
 
 Yes, if you're comfortable with PHP and WordPress' Filters API. Read throughout the source code of this plugin and spot the calls to `apply_filters`. That's where you have to hook in to add avatars, time and dates, reply, retweet and favorite actions and more.
 
+= Tell me more about styling it! =
+
+Sure thing, there's a [Gist available](https://gist.github.com/1134325) that provides a few examples. Go ahead and copy/paste them into your Custom CSS field in the plugin options. There's no all-in-one solution since it really depends on your theme. Some might want an icon, others a right margin. Somebody wants a different typeface, others would want the author to stand out. So what I have created is a simple skeleton that works out of the box, rest is up to you.
+
 == Changelog ==
 
 = 1.0 =
