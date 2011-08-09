@@ -2,7 +2,7 @@
 Contributors: kovshenin
 Author URI: http://kovshenin.com
 Plugin URL: http://theme.fm/plugins/twitter-blockquotes/
-Requires at Least: 3.0
+Requires at Least: 3.1
 Tested Up To: 3.2.1
 Tags: twitter, embed, tweet
 Stable tag: 1.0
