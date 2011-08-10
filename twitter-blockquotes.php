@@ -94,7 +94,10 @@ class Twitter_Blockquotes_Plugin {
 			// This will be embedded.
 			$embed = "{$before_blockquote}<blockquote class='{$blockquote_class}' cite='{$cite_attr}'><p>{$text}
 				{$before_cite}<cite>{$cite}</cite>{$after_cite}
-			</p></blockquote>{$after_blockquote}";		
+			</p></blockquote>{$after_blockquote}";
+			
+			// Or override the whole embed HTML completely.
+			$embed = apply_filters( 'twitter_blockquote_tweet_embed', $embed, $tweet, $tweet_id, $url );
 		}
 
 		return apply_filters( 'embed_twitter_blockquote', $embed, $matches, $attr, $url, $rawattr );
@@ -118,6 +121,9 @@ class Twitter_Blockquotes_Plugin {
 		// General section
 		add_settings_field( 'custom-css', 'Custom CSS', array( &$this, '_settings_custom_css' ), 'twitter-blockquotes', 'twitter_blockquotes_general' );
 		add_settings_field( 'clear-cache', 'Clear Cache', array( &$this, '_settings_clear_cache'), 'twitter-blockquotes', 'twitter_blockquotes_general' );
+		
+		// Anything else?
+		do_action( 'twitter_blockquotes_settings' );
 		
 		// Clearing caches?
 		if ( isset( $_GET['twitter_blockquote_clear_caches'], $_GET['_wpnonce'] ) && current_user_can( 'manage_options' ) && check_admin_referer( 'twitter-blockquotes-clear-caches' ) ) {
@@ -156,6 +162,7 @@ class Twitter_Blockquotes_Plugin {
 	 * Validates the twitter-blockquotes options when saved.
 	 */
 	public function _validate_options( $options ) {
+		$options = apply_filters( 'twitter_blockquotes_validate_options', $options );
 		return $options;
 	}
 	
@@ -197,6 +204,8 @@ class Twitter_Blockquotes_Plugin {
 	 */
 	private function _clear_post_meta_caches() {
 		global $wpdb;
+		
+		do_action( 'twitter_blockquotes_clear_caches' );
 		
 		// This is dangerous, seriously..
 		return $wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_tbq_%'" );
