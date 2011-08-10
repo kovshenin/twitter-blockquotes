@@ -25,6 +25,10 @@ Yes, if you're comfortable with PHP and WordPress' Filters API. Read throughout 
 
 Sure thing, there's a [Gist available](https://gist.github.com/1134325) that provides a few examples. Go ahead and copy/paste them into your Custom CSS field in the plugin options. There's no all-in-one solution since it really depends on your theme. Some might want an icon, others a right margin. Somebody wants a different typeface, others would want the author to stand out. So what I have created is a simple skeleton that works out of the box, rest is up to you.
 
+== Screenshots ==
+1. This is how your embedded tweets will appear on your blog or site.
+2. This is how you embed your tweets in the editor -- just a link on it's own line.
+
 == Changelog ==
 
 = 1.0 =
