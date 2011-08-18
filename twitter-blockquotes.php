@@ -10,6 +10,8 @@
  *
  * Inspired by the Blackbird Pie plugin by bradvin: http://wordpress.org/extend/plugins/twitter-blackbird-pie/
  * Kudos for the plugin sources, I actually took some of the regexes from it.
+ *
+ * Text Domain : twitter-blockquotes
  */
 
 class Twitter_Blockquotes_Plugin {
@@ -36,7 +38,7 @@ class Twitter_Blockquotes_Plugin {
  	private function _load_options() {
 		$this->options = (array) get_option( 'twitter-blockquotes' );
 	}
-	
+  
 	/*
 	 * Embed Handler
 	 *
@@ -115,13 +117,17 @@ class Twitter_Blockquotes_Plugin {
 	 * Fired during admin_init (doh!), registers settings, sections and fields.
 	 */
 	public function _admin_init() {
+         // Add internationalization
+		load_plugin_textdomain( 'twitter-blockquotes', false, 'twitter-blockquotes/languages' );
+	
 		register_setting( 'twitter-blockquotes', 'twitter-blockquotes', array( &$this, '_validate_options' ) );
-		add_settings_section( 'twitter_blockquotes_general', 'General Settings', array( &$this, '_settings_section_general' ), 'twitter-blockquotes' );
+		add_settings_section( 'twitter_blockquotes_general', __('General Settings', 'twitter-blockquotes'), array( &$this, '_settings_section_general' ), 'twitter-blockquotes' );
 		
 		// General section
-		add_settings_field( 'custom-css', 'Custom CSS', array( &$this, '_settings_custom_css' ), 'twitter-blockquotes', 'twitter_blockquotes_general' );
-		add_settings_field( 'clear-cache', 'Clear Cache', array( &$this, '_settings_clear_cache'), 'twitter-blockquotes', 'twitter_blockquotes_general' );
+		add_settings_field( __('Custom CSS','twitter-blockquotes'), __('Custom CSS','twitter-blockquotes'), array( &$this, '_settings_custom_css' ), 'twitter-blockquotes', 'twitter_blockquotes_general' );
+		add_settings_field( 'clear-cache', __('Clear Cache','twitter-blockquotes'), array( &$this, '_settings_clear_cache'), 'twitter-blockquotes', 'twitter_blockquotes_general' );
 		
+	
 		// Anything else?
 		do_action( 'twitter_blockquotes_settings' );
 		
@@ -130,7 +136,7 @@ class Twitter_Blockquotes_Plugin {
 			
 			// Call that dangerous function and add an updated message.
 			$this->_clear_post_meta_caches();
-			add_settings_error( 'twitter-blockquotes', 100, 'Caches have been cleared!', 'updated' );
+			add_settings_error( 'twitter-blockquotes', 100, __('Caches have been cleared!','twitter-blockquotes'), 'updated' );
 		}
 	}
 	
@@ -141,8 +147,8 @@ class Twitter_Blockquotes_Plugin {
 	 */
 	public function _settings_custom_css() {
 	?>
-		<textarea class="code large-text" rows="5" name="twitter-blockquotes[custom-css]"><?php echo esc_textarea( @$this->options['custom-css'] ); ?></textarea><br />
-		<span class="description">Use any CSS you like to customize your Twitter Blockquotes. The blockquote element selector is <code>blockquote.tweet</code></span>
+<textarea class="code large-text" rows="5" name="<?php _e('twitter-blockquotes[custom-css]', 'twitter-blockquotes'); ?> "><?php echo esc_textarea( @$this->options['custom-css'] ); ?></textarea><br />
+                <span class="description"><?php _e('Use any CSS you like to customize your Twitter Blockquotes. The blockquote element selector is <code>blockquote.tweet</code>', 'twitter-blockquotes'); ?> </span>
 	<?php
 	}
 	
@@ -153,8 +159,8 @@ class Twitter_Blockquotes_Plugin {
 		$nonce = wp_create_nonce( 'twitter-blockquotes-clear-caches' );
 		$url = admin_url( 'options-general.php?page=twitter-blockquotes&twitter_blockquote_clear_caches=1&_wpnonce=' . $nonce );
 	?>
-		<a href="<?php echo $url; ?>" class="button">Clear All Caches</a>
-		<span class="description">Hit this button if you'd like to clear all the caches.</span>
+                <a href="<?php echo $url; ?>" class="button"><?php _e('Clear All Caches', 'twitter-blockquotes'); ?> </a>
+                <span class="description"><?php _e('Hit this button if you\'d like to clear all the caches.','twitter-blockquotes');?> </span>
 	<?php
 	}
 	
@@ -180,12 +186,13 @@ class Twitter_Blockquotes_Plugin {
 	?>
 	<div class="wrap">
 		<div id="icon-options-general" class="icon32"><br></div>
-		<h2>Twitter Blockquotes Settings</h2>
+		<h2><?php _e( 'Twitter Blockquotes Settings', 'twitter-blockquotes'); ?></h2>
 
 		<form method="post" action="options.php">
 				<!-- Provide some help, eh? -->
-				<p><strong>Hi there friend!</strong> Thank you for using Twitter Blockquotes. We don't provide too many options yet, Twitter Blockquotes is designed to be as clean and simple as possible. It's up to you how you want your tweets to appear, whether you want avatars and retweet capabilities, perhaps a Twitter bird on the left? Most of the styling is done through the Custom CSS field below, rest is up to a few actions and filters. Read <a href="http://theme.fm/2011/08/embedding-tweets-in-wordpress-with-twitter-blockquotes-1548/">this guide</a> to learn more.</p>
-				<p>Twitter Blockquotes usage is quite simple, just copy and paste a URL to any tweet in your posts or pages on a separate line, similar to how you embed YouTube or Vimeo videos. We'll transform that into a nice-looking blockquote for you!</p>
+                                <p><?php _e("<strong>Hi there friend!</strong> Thank you for using Twitter Blockquotes. We don\'t provide too many options yet, Twitter Blockquotes is designed to be as clean and simple as possible. It\'s up to you how you want your tweets to appear, whether you want avatars and retweet capabilities, perhaps a Twitter bird on the left? Most of the styling is done through the Custom CSS field below, rest is up to a few actions and filters. Read <a href=\"http://theme.fm/2011/08/embedding-tweets-in-wordpress-with-twitter-blockquotes-1548/\">this guide</a> to learn more.", 'twitter-blockquotes'); ?> </p>
+                                <p><?php
+_e('Twitter Blockquotes usage is quite simple, just copy and paste a URL to any tweet in your posts or pages on a separate line, similar to how you embed YouTube or Vimeo videos. We\'ll transform that into a nice-looking blockquote for you!','twitter-blockquotes');?> </p>
 
 			<?php wp_nonce_field( 'update-options' ); ?>
 			<?php settings_fields( 'twitter-blockquotes' ); ?>
