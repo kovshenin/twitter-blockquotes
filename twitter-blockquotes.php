@@ -10,8 +10,6 @@
  *
  * Inspired by the Blackbird Pie plugin by bradvin: http://wordpress.org/extend/plugins/twitter-blackbird-pie/
  * Kudos for the plugin sources, I actually took some of the regexes from it.
- *
- * Text Domain : twitter-blockquotes
  */
 
 class Twitter_Blockquotes_Plugin {
@@ -117,8 +115,8 @@ class Twitter_Blockquotes_Plugin {
 	 * Fired during admin_init (doh!), registers settings, sections and fields.
 	 */
 	public function _admin_init() {
-         // Add internationalization
-		load_plugin_textdomain( 'twitter-blockquotes', false, 'twitter-blockquotes/languages' );
+            		// Add internationalization
+		load_plugin_textdomain( 'twitter-blockquotes', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	
 		register_setting( 'twitter-blockquotes', 'twitter-blockquotes', array( &$this, '_validate_options' ) );
 		add_settings_section( 'twitter_blockquotes_general', __('General Settings', 'twitter-blockquotes'), array( &$this, '_settings_section_general' ), 'twitter-blockquotes' );
